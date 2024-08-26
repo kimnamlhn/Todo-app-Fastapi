@@ -1,15 +1,14 @@
-from typing import Union
-
 from fastapi import FastAPI
+from routers import company, task, user, auth
+
 
 app = FastAPI()
 
+# app.include_router(company.router)
+# app.include_router(task.router)
+# app.include_router(user.router)
+# app.include_router(auth.router)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/", tags=["Health Check"])
+async def health_check():
+    return "API Service is up and running!"
