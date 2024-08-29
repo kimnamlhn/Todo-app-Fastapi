@@ -11,4 +11,4 @@ class Company(Base, BaseEntity):
     company_name = Column(String)
     address = Column(Enum(Gender), nullable=False, default=Gender.NONE)
 
-    books = relationship("Book", back_populates="author")
+    task = relationship("Task", back_populates="company")
