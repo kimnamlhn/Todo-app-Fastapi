@@ -12,10 +12,13 @@ from uuid import uuid4
 from alembic import op
 import sqlalchemy as sa
 
+from schemas.user import get_password_hash
+from settings import ADMIN_DEFAULT_PASSWORD
+
 
 # revision identifiers, used by Alembic.
 revision: str = 'ff1a4a3733a5'
-down_revision: Union[str, None] = '1a0af04bfd73'
+down_revision: Union[str, None] = 'c4f2ae1d2d1d'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -36,9 +39,9 @@ def upgrade() -> None:
         sa.Column("updated_at", sa.DateTime)
     )
     op.create_index("idx_usr_fst_lst_name", "users", ["first_name", "last_name"])
-    # Update Book Table
-    op.add_column("books", sa.Column("owner_id", sa.UUID, nullable=True))
-    op.create_foreign_key("fk_book_owner", "books", "users", ["owner_id"],['id'])
+    # Update Tasks Table
+    op.add_column("tasks", sa.Column("owner_id", sa.UUID, nullable=True))
+    op.create_foreign_key("fk_task_owner", "tasks", "users", ["owner_id"],['id'])
 
     # Data seed for first user
     op.bulk_insert(user_table, [
@@ -46,7 +49,7 @@ def upgrade() -> None:
             "id": uuid4(),
             "email": "fastapi_tour@sample.com", 
             "username": "fa_admin",
-            "password": "123456", #get_password_hash(ADMIN_DEFAULT_PASSWORD),
+            "password": get_password_hash(ADMIN_DEFAULT_PASSWORD),
             "first_name": "FastApi",
             "last_name": "Admin",
             "is_active": True,
