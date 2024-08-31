@@ -18,7 +18,7 @@ from settings import ADMIN_DEFAULT_PASSWORD
 
 # revision identifiers, used by Alembic.
 revision: str = 'ff1a4a3733a5'
-down_revision: Union[str, None] = 'c4f2ae1d2d1d'
+down_revision: Union[str, None] = '1a0af04bfd73'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -36,18 +36,19 @@ def upgrade() -> None:
         sa.Column("is_active", sa.Boolean, default=True),
         sa.Column("is_admin", sa.Boolean, default=False),
         sa.Column("created_at", sa.DateTime),
-        sa.Column("updated_at", sa.DateTime)
+        sa.Column("updated_at", sa.DateTime),
+        sa.Column("company_id", sa.UUID, nullable=True)
     )
     op.create_index("idx_usr_fst_lst_name", "users", ["first_name", "last_name"])
-    # Update Tasks Table
-    op.add_column("tasks", sa.Column("owner_id", sa.UUID, nullable=True))
-    op.create_foreign_key("fk_task_owner", "tasks", "users", ["owner_id"],['id'])
+    
+    # Add foreign key
+    op.create_foreign_key("fk_user_company", "users", "company", ["company_id"],['id'])
 
     # Data seed for first user
     op.bulk_insert(user_table, [
         {
-            "id": uuid4(),
-            "email": "fastapi_tour@sample.com", 
+            "id": "07f73797-42f2-4cfa-a658-21a11d93a76d",
+            "email": "fastapi_example@sample.com", 
             "username": "fa_admin",
             "password": get_password_hash(ADMIN_DEFAULT_PASSWORD),
             "first_name": "FastApi",
@@ -55,13 +56,11 @@ def upgrade() -> None:
             "is_active": True,
             "is_admin": True,
             "created_at": datetime.now(timezone.utc),
-            "updated_at": datetime.now(timezone.utc)
+            "updated_at": datetime.now(timezone.utc),
+            "company_id": "80668578-146c-413c-aaec-6e8282322bdf",
         }
     ])
 
 
 def downgrade() -> None:
-    # Rollback foreign key
-    op.drop_column("tasks", "owner_id")
-    # Rollback foreign key
     op.drop_table("users")

@@ -6,6 +6,7 @@ Create Date: 2024-08-29 15:51:28.654573
 
 """
 from typing import Sequence, Union
+from uuid import uuid4
 
 from alembic import op
 import sqlalchemy as sa
@@ -19,14 +20,26 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.create_table(
+    company_table = op.create_table(
         'company',
         sa.Column('id', sa.UUID, nullable=False, primary_key=True),
-        sa.Column('company_name', sa.String, nullable=False),
-        sa.Column('address', sa.String, nullable=False),
-        sa.Column('created_at', sa.DateTime),
-        sa.Column('updated_at', sa.DateTime)
+        sa.Column('name', sa.String, nullable=False),
+        sa.Column('description', sa.String, nullable=False),
+        sa.Column('mode', sa.String, nullable=False),
+        sa.Column('rating', sa.SmallInteger, default=0),
     )
 
+    # Data seed for first company
+    op.bulk_insert(company_table, [
+        {
+            "id": "80668578-146c-413c-aaec-6e8282322bdf",
+            "name": "Nashtech", 
+            "description": "Nashtech vietnam",
+            "mode": "active",
+            "rating": 5
+        }
+    ])
+    
+    
 def downgrade() -> None:
     op.drop_table('company')
