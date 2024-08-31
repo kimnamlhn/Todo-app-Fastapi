@@ -3,8 +3,9 @@ from uuid import UUID
 from datetime import datetime
 from pydantic import BaseModel, Field
 
-from models import CompanyViewModel, UserBaseModel
-from schemas import TaskMode
+from models.company import CompanyViewModel
+from models.user import UserBaseModel
+from schemas.task import TaskMode
 
 
 class SearchTaskModel():
@@ -34,9 +35,10 @@ class TaskModel(BaseModel):
 class TaskViewModel(BaseModel):
     id: UUID
     title: str
+    summary: str | None = None
     description: str | None = None
-    company_id: UUID
-    company: CompanyViewModel
+    status: TaskMode = Field(default=TaskMode.NEW)
+    priority: int
     owner_id: UUID | None = None
     owner: UserBaseModel | None = None
     created_at: datetime | None = None
@@ -44,4 +46,3 @@ class TaskViewModel(BaseModel):
     
     class Config:
         from_attributes = True
-
