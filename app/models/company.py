@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from schemas.base_entity import Gender
 from datetime import datetime
 from uuid import UUID
 
