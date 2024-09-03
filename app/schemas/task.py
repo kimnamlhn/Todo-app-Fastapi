@@ -12,7 +12,6 @@ class TaskMode(enum.Enum):
 class Task(BaseEntity, Base):
     __tablename__ = "tasks"
 
-    title = Column(String)
     summary = Column(String)
     description = Column(String)
     status = Column(Enum(TaskMode), nullable=False, default=TaskMode.NEW)
