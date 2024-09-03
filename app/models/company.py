@@ -3,9 +3,11 @@ from datetime import datetime
 from uuid import UUID
 
 class CompanyModel(BaseModel):
-    full_name: str = Field(min_length=2)
-
-
+    name: str = Field(min_length=2)
+    description: str = Field(min_length=2)
+    mode: str
+    rating: int
+    
 class CompanyViewModel(BaseModel):
     id: UUID 
     name: str

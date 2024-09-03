@@ -33,10 +33,11 @@ def update_company(db: Session, id: UUID, data: CompanyModel) -> Company:
     if company is None:
         raise ResourceNotFoundError()
     
-    company.full_name = data.full_name
-    # author.gender = data.gender
-    company.updated_at = utils.get_current_utc_time()
-    
+    company.name = data.name
+    company.description = data.description
+    company.mode = data.mode
+    company.rating = data.rating
+ 
     db.commit()
     db.refresh(company)
 
