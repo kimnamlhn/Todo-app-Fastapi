@@ -4,11 +4,57 @@
 
 A To-do application to learn how to use FastAPI with SQLAlchemy and PostgreSQL.
 
+## API Documentation 
+Below are the endpoints in the project. For more details, see the [Demo video](https://www.youtube.com/watch?v=w43f_5inPYk)
+- Company
+   - Get all companies
+   ```http
+   GET /company
+   ```
+   - Create a company
+   ```http
+   POST /company
+   ```
+   - Get a company by id
+   ```http
+   GET /company/company_id
+   ```
+  - Update a company
+   ```http
+   PUT /company/company_id
+   ```
+   - Delete a company
+   ```http
+   DELETE /company/company_id
+   ```
+- User
+   - Get all users
+   ```http
+   GET /users
+   ```
+   
+- Task
+   - Get all task
+   ```http
+   GET /tasks
+   ```
+   
+ - Healthcheck
+   ```http
+   GET /
+   ```
+ - Auth
+     - Login for access token
+     ```http
+     POST /auth/token
+     ```
 ## Installation
 
 ### Prerequisites
 
 - Python 3.12.5
+- PostgreSQL
+- pgAdmin 4
 
 ### Steps
 
@@ -25,31 +71,22 @@ pip install virtualenv
 # Generate virtual environment
 virtualenv --python=<your-python-runtime-version> venv
 
-# Activate virtual environment
-source venv/bin/activate
-
 # Install depdendency packages
 pip install -r requirements.txt
 ```
 
 #### 3. Configure `.env` file by creating a copy from `.env.sample`
+ - Example:
+![image](https://github.com/user-attachments/assets/a7dbdcc4-2613-48e4-a7be-dafa4a36f148)
 
-#### 4. Setup a postgres 
+#### 4. Setup a PostgresSQL 
+- Install PostgreSQL and pgAdmin
+- Create a new database and add the necessary information (e.g., host, username, password) to the .env file
 
 #### 5. Database migrations
- At `app` directory, run `alembic` migration command. Please make sure your postgres DB is ready and accessible. In case you want to use `SQLite` instead, please be sure to configure the `env.py` file in `alembic` folder to support `batch execution` since `SQLite` does not support `ALTER` command, which is needed to configure the foreign key and establish the indexes.
+ At `app` directory, run `alembic` migration command. 
 ```bash
-# Migrate to latest revison
 alembic upgrade head
-
-# Dowgragde to specific revision
-alembic downgrade <revision_number>
-
-# Downgrade to base (revert all revisions)
-alembic downgrade base
-
-# Create new revision
-alembic revision -m <comment>
 ```   
 
 ## Usage
