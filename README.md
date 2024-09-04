@@ -34,7 +34,7 @@ Below are the endpoints in the project. For more details, see the [Demo video](h
    ```
    
 - Task
-   - Get all task
+   - Get all tasks
    ```http
    GET /tasks
    ```
