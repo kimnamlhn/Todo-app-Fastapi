@@ -3,6 +3,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
+from schemas.task import Task
 from services import utils
 from models.user import SearchUserModel, UserModel, UserViewModel
 from schemas.user import User, get_password_hash
@@ -106,6 +107,16 @@ def delete_user(db: Session, id: UUID) -> None:
 
     if user is None:
         raise ResourceNotFoundError()
+
+    isUserHaveAnyTasks = is_user_have_any_tasks(db, id)
+    
+    if isUserHaveAnyTasks is True:
+        raise InvalidInputError("Please delete all tasks belonging to this user before deletion")  
     
     db.delete(user)
     db.commit()
+
+def is_user_have_any_tasks(db: Session, user_id: UUID) -> None:
+    user =  db.scalars(select(Task).filter(Task.owner_id == user_id)).first()
+       
+    return user is not None

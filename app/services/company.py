@@ -3,10 +3,11 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
+from schemas.user import User
 from services import utils
 from models.company import CompanyModel, SearchCompanyModel
 from schemas.company import Company
-from services.exception import ResourceNotFoundError
+from services.exception import InvalidInputError, ResourceNotFoundError
 
 def get_all_companies(db: Session, conds: SearchCompanyModel) -> List[Company]:
     query = select(Company)
@@ -55,5 +56,15 @@ def delete_company(db: Session, id: UUID) -> None:
     if company is None:
         raise ResourceNotFoundError()
     
+    isCompanyContainsUsers = is_company_contains_users(db, id)
+    
+    if isCompanyContainsUsers is True:
+        raise InvalidInputError("Please delete all users belonging to this company before deletion")   
+     
     db.delete(company)
     db.commit()
+
+def is_company_contains_users(db: Session, company_id: UUID) -> None:
+    user =  db.scalars(select(User).filter(User.company_id == company_id)).first()
+       
+    return user is not None
