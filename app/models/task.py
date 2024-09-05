@@ -5,6 +5,13 @@ from pydantic import BaseModel, Field
 from models.user import UserViewModel
 from schemas.task import TaskMode
 
+class SearchTaskModel():
+    def __init__(self, summary, owner_id, page, size) -> None:
+        self.summary = summary
+        self.owner_id = owner_id
+        self.page = page
+        self.size = size
+        
 class TaskModel(BaseModel):
     summary: str | None = None
     description: str | None = None
@@ -23,3 +30,4 @@ class TaskViewModel(BaseModel):
     
     class Config:
         from_attributes = True
+              

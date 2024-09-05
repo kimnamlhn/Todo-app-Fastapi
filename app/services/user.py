@@ -1,9 +1,10 @@
+from typing import List
 from uuid import UUID
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from services import utils
-from models.user import UserModel, UserViewModel
+from models.user import SearchUserModel, UserModel, UserViewModel
 from schemas.user import User, get_password_hash
 from services.exception import InvalidInputError, ResourceNotFoundError
 from services import company as CompanyService
@@ -12,6 +13,19 @@ async def get_user(async_db: AsyncSession) -> list[User]:
     result = await async_db.scalars(select(User).order_by(User.id))
     
     return result.all()
+
+def get_user(db: Session, conds: SearchUserModel) -> List[User]:
+    query = select(User).options(
+        joinedload(User.company, innerjoin=True))
+    
+    if conds.email is not None:
+        query = query.filter(User.email.like(f"%{conds.email}%"))
+    if conds.company_id is not None:
+        query = query.filter(User.company_id == conds.company_id)
+    
+    query.offset((conds.page-1)*conds.size).limit(conds.size)
+    
+    return db.scalars(query).all()
 
 def get_user_by_id(db: Session, user_id: UUID) -> User:
     return db.scalars(select(User).filter(User.id == user_id)).first()

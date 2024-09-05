@@ -5,6 +5,13 @@ from pydantic import BaseModel
 
 from models.company import CompanyViewModel
 
+class SearchUserModel():
+    def __init__(self, email, company_id, page, size) -> None:
+        self.email = email
+        self.company_id = company_id
+        self.page = page
+        self.size = size
+
 class UserModel(BaseModel):
     username: str
     email: Optional[str]
@@ -32,3 +39,4 @@ class UserViewModel(UserBaseModel):
     updated_at: datetime | None = None
     company_id: UUID | None = None
     company: CompanyViewModel | None = None  
+    

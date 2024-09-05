@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from uuid import UUID
 from starlette import status
 from sqlalchemy.orm import Session
@@ -7,15 +7,26 @@ from sqlalchemy.orm import Session
 from services.exception import AccessDeniedError, ResourceNotFoundError
 from database import get_db_context
 from schemas.user import User
-from models.user import UserModel, UserViewModel, UserBaseModel
+from models.user import SearchUserModel, UserModel, UserViewModel, UserBaseModel
 from services import auth as AuthService
 from services import user as UserService
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=List[UserViewModel])
-async def get_users(db: Session = Depends(get_db_context)) -> List[UserViewModel]:
-    return db.query(User).filter(User.is_active == True).all()
+async def get_users(
+    email: str = Query(default=None),
+    company_id: UUID = Query(default=None),
+    page: int = Query(ge=1, default=1),
+    size: int = Query(ge=1, le=50, default=10),
+    db: Session = Depends(get_db_context),
+    user: User = Depends(AuthService.token_interceptor)
+    ):
+        if not user.is_admin:
+            raise AccessDeniedError()
+        
+        conds = SearchUserModel(email, company_id, page, size)
+        return  UserService.get_user(db, conds)
 
 @router.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=UserViewModel)
 async def get_user_by_id(

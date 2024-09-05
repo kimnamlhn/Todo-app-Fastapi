@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from starlette import status
 from sqlalchemy.orm import Session
 from uuid import UUID
@@ -8,16 +8,27 @@ from schemas.user import User
 from services.exception import AccessDeniedError, ResourceNotFoundError
 from database import get_db_context
 from schemas.task import Task
-from models.task import TaskModel, TaskViewModel
+from models.task import TaskModel, TaskViewModel, SearchTaskModel
 from services import auth as AuthService
 from services import task as TaskService
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=List[TaskViewModel])
-async def get_tasks(db: Session = Depends(get_db_context)) -> List[TaskViewModel]:
-    return db.query(Task).all()
-
+async def get_all_tasks(
+    summary: str = Query(default=None),
+    owner_id: UUID = Query(default=None),
+    page: int = Query(ge=1, default=1),
+    size: int = Query(ge=1, le=50, default=10),
+    db: Session = Depends(get_db_context),
+    user: User = Depends(AuthService.token_interceptor)
+    ):
+        if not user.is_admin:
+            raise AccessDeniedError()
+        
+        conds = SearchTaskModel(summary, owner_id, page, size)
+        return TaskService.get_task(db, conds)
+    
 @router.get("/{task_id}", status_code=status.HTTP_200_OK, response_model=TaskViewModel)
 async def get_task_by_id(
     task_id: UUID,

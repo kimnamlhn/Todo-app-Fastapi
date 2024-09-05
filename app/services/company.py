@@ -1,16 +1,22 @@
+from typing import List
 from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from services import utils
-from models.company import CompanyModel
+from models.company import CompanyModel, SearchCompanyModel
 from schemas.company import Company
 from services.exception import ResourceNotFoundError
 
-async def get_company(async_db: AsyncSession) -> list[Company]:
-    result = await async_db.scalars(select(Company).order_by(Company.id))
+def get_company(db: Session, conds: SearchCompanyModel) -> List[Company]:
+    query = select(Company)
     
-    return result.all()
+    if conds.name is not None:
+        query = query.filter(Company.name.like(f"%{conds.name}%"))
+    
+    query.offset((conds.page-1)*conds.size).limit(conds.size)
+    
+    return db.scalars(query).all()
 
 def get_company_by_id(db: Session, company_id: UUID) -> Company:
     return db.scalars(select(Company).filter(Company.id == company_id)).first()
