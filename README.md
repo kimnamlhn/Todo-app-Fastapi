@@ -5,7 +5,7 @@
 A To-do application to learn how to use FastAPI with SQLAlchemy and PostgreSQL.
 
 ## API Documentation 
-Below are the endpoints in the project. For more details, see the [Demo video](https://www.youtube.com/watch?v=w43f_5inPYk)
+Below are the endpoints in the project:
 - Company
    - Get all companies
    ```http
@@ -32,11 +32,43 @@ Below are the endpoints in the project. For more details, see the [Demo video](h
    ```http
    GET /users
    ```
+   - Create a users
+   ```http
+   POST /users
+   ```
+   - Get a user by id
+   ```http
+   GET /users/user_id
+   ```
+  - Update a user
+   ```http
+   PUT /users/user_id
+   ```
+   - Delete a user
+   ```http
+   DELETE /users/user_id
+   ```
    
 - Task
    - Get all tasks
    ```http
    GET /tasks
+   ```
+   - Create a tasks
+   ```http
+   POST /tasks
+   ```
+   - Get a task by id
+   ```http
+   GET /tasks/task_id
+   ```
+  - Update a task
+   ```http
+   PUT /tasks/task_id
+   ```
+   - Delete a task
+   ```http
+   DELETE /tasks/task_id
    ```
    
  - Healthcheck
