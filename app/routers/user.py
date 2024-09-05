@@ -14,7 +14,7 @@ from services import user as UserService
 router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=List[UserViewModel])
-async def get_users(
+async def get_all_users(
     email: str = Query(default=None),
     company_id: UUID = Query(default=None),
     page: int = Query(ge=1, default=1),
@@ -26,7 +26,7 @@ async def get_users(
             raise AccessDeniedError()
         
         conds = SearchUserModel(email, company_id, page, size)
-        return  UserService.get_user(db, conds)
+        return  UserService.get_all_users(db, conds)
 
 @router.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=UserViewModel)
 async def get_user_by_id(

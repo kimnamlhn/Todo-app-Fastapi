@@ -8,7 +8,7 @@ from models.company import CompanyModel, SearchCompanyModel
 from schemas.company import Company
 from services.exception import ResourceNotFoundError
 
-def get_company(db: Session, conds: SearchCompanyModel) -> List[Company]:
+def get_all_companies(db: Session, conds: SearchCompanyModel) -> List[Company]:
     query = select(Company)
     
     if conds.name is not None:

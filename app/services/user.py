@@ -9,12 +9,7 @@ from schemas.user import User, get_password_hash
 from services.exception import InvalidInputError, ResourceNotFoundError
 from services import company as CompanyService
 
-async def get_user(async_db: AsyncSession) -> list[User]:
-    result = await async_db.scalars(select(User).order_by(User.id))
-    
-    return result.all()
-
-def get_user(db: Session, conds: SearchUserModel) -> List[User]:
+def get_all_users(db: Session, conds: SearchUserModel) -> List[User]:
     query = select(User).options(
         joinedload(User.company, innerjoin=True))
     

@@ -27,7 +27,7 @@ async def get_all_tasks(
             raise AccessDeniedError()
         
         conds = SearchTaskModel(summary, owner_id, page, size)
-        return TaskService.get_task(db, conds)
+        return TaskService.get_all_tasks(db, conds)
     
 @router.get("/{task_id}", status_code=status.HTTP_200_OK, response_model=TaskViewModel)
 async def get_task_by_id(

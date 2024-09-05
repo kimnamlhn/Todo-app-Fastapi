@@ -15,7 +15,7 @@ from services import auth as AuthService
 router = APIRouter(prefix="/company", tags=["Company"])
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=List[CompanyViewModel])
-async def get_all_company(
+async def get_all_companies(
     name: str = Query(default=None),
     page: int = Query(ge=1, default=1),
     size: int = Query(ge=1, le=50, default=10),
@@ -26,7 +26,7 @@ async def get_all_company(
             raise AccessDeniedError()
         
         conds = SearchCompanyModel(name, page, size)
-        return CompanyService.get_company(db, conds)
+        return CompanyService.get_all_companies(db, conds)
 
 @router.get("/{company_id}", status_code=status.HTTP_200_OK, response_model=CompanyViewModel)
 async def get_company_by_id(

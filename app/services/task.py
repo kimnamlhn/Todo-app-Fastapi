@@ -9,7 +9,7 @@ from schemas.task import Task
 from services.exception import InvalidInputError, ResourceNotFoundError
 from services import user as UserService
 
-def get_task(db: Session, conds: SearchTaskModel) -> List[Task]:
+def get_all_tasks(db: Session, conds: SearchTaskModel) -> List[Task]:
     query = select(Task).options(
         joinedload(Task.owner, innerjoin=True))
     
