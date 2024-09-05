@@ -37,4 +37,4 @@ class UserViewModel(UserBaseModel):
     is_active: bool
     company_id: UUID
     created_at: datetime | None = None
-    update_at: datetime | None = None
+    updated_at: datetime | None = None
