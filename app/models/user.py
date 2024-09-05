@@ -3,6 +3,8 @@ from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel
 
+from models.company import CompanyViewModel
+
 class UserModel(BaseModel):
     username: str
     email: Optional[str]
@@ -11,17 +13,8 @@ class UserModel(BaseModel):
     password: str
     is_active: bool
     is_admin: bool
+    company_id: UUID | None = None
 
-class UserCreate(BaseModel):
-    username: str
-    email: Optional[str]
-    first_name: str
-    last_name: str
-    password: str
-    is_active: bool
-    is_admin: bool
-    company_id: UUID
-    
 class UserBaseModel(BaseModel):
     id: UUID
     username: str
@@ -35,6 +28,7 @@ class UserBaseModel(BaseModel):
 class UserViewModel(UserBaseModel):
     is_admin: bool
     is_active: bool
-    company_id: UUID
     created_at: datetime | None = None
     updated_at: datetime | None = None
+    company_id: UUID | None = None
+    company: CompanyViewModel | None = None  
