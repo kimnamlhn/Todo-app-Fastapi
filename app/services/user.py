@@ -25,11 +25,34 @@ def get_all_users(db: Session, conds: SearchUserModel) -> List[User]:
 def get_user_by_id(db: Session, user_id: UUID) -> User:
     return db.scalars(select(User).filter(User.id == user_id)).first()
 
+def is_email_exist(db: Session, email: str) -> User:
+    user =  db.scalars(select(User).filter(User.email == email)).first()
+       
+    return user is not None
+
+def is_username_exist(db: Session, username: UUID) -> User:
+    user =  db.scalars(select(User).filter(User.username == username)).first()
+       
+    return user is not None
+
+def get_user_by_id(db: Session, user_id: UUID) -> User:
+    return db.scalars(select(User).filter(User.id == user_id)).first()
+
 def add_new_user(db: Session, data: UserModel) -> User:
     company = CompanyService.get_company_by_id(db, data.company_id)
         
     if company is None:
         raise InvalidInputError("Invalid company information")
+    
+    isEmailExist = is_email_exist(db, data.email)
+    
+    if isEmailExist is True:
+        raise InvalidInputError("Email already exists.")
+
+    isUsernameExist = is_username_exist(db, data.username)
+    
+    if isUsernameExist is True:
+        raise InvalidInputError("Username already exists.")
     
     user = User(**data.model_dump())
 
@@ -53,6 +76,16 @@ def update_user(db: Session, id: UUID, data: UserModel) -> User:
         
     if company is None:
         raise InvalidInputError("Invalid company information")
+
+    isEmailExist = is_email_exist(db, data.email)
+    
+    if isEmailExist is True:
+        raise InvalidInputError("Email already exists.")
+
+    isUsernameExist = is_username_exist(db, data.username)
+    
+    if isUsernameExist is True:
+        raise InvalidInputError("Username already exists.")
     
     user.email = data.email
     user.username = data.username
