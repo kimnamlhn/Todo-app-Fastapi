@@ -14,7 +14,7 @@ def get_all_companies(db: Session, conds: SearchCompanyModel) -> List[Company]:
     if conds.name is not None:
         query = query.filter(Company.name.like(f"%{conds.name}%"))
     
-    query.offset((conds.page-1)*conds.size).limit(conds.size)
+    query = query.offset((conds.page-1)*conds.size).limit(conds.size)
     
     return db.scalars(query).all()
 

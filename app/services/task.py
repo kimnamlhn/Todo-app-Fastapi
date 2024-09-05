@@ -18,7 +18,7 @@ def get_all_tasks(db: Session, conds: SearchTaskModel) -> List[Task]:
     if conds.owner_id is not None:
         query = query.filter(Task.owner_id == conds.owner_id)
     
-    query.offset((conds.page-1)*conds.size).limit(conds.size)
+    query = query.offset((conds.page-1)*conds.size).limit(conds.size)
     
     return db.scalars(query).all()
 

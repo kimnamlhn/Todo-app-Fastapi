@@ -18,7 +18,7 @@ def get_all_users(db: Session, conds: SearchUserModel) -> List[User]:
     if conds.company_id is not None:
         query = query.filter(User.company_id == conds.company_id)
     
-    query.offset((conds.page-1)*conds.size).limit(conds.size)
+    query = query.offset((conds.page-1)*conds.size).limit(conds.size)
     
     return db.scalars(query).all()
 
