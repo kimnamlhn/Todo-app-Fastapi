@@ -1,8 +1,8 @@
-# Todo-app-Fastapi
+# Task-management-fastapi
 
 ## Project Overview
 
-A To-do application to learn how to use FastAPI with SQLAlchemy and PostgreSQL.
+A task management application to learn how to use FastAPI with SQLAlchemy and PostgreSQL.
 
 ## API Documentation 
 Below are the endpoints in the project:
